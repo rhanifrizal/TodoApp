@@ -1,12 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'core/router/app_router.dart';
-import 'core/utils/themes/theme.dart';
 import 'dependencies.dart';
+import 'features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:todoapp/core/utils/utils.dart';
 
-void main() async {
+Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initDependencies();
-  runApp(const MyApp());
+  Bloc.observer = SimpleBlocObserver();
+  runApp(
+    MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => serviceLocator<AuthBloc>()..add(AuthInitializedEvent())),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
